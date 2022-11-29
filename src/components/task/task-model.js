@@ -9,11 +9,25 @@ const taskSchema = new Schema({
     },
     description: {
         type: String
+    },
+    list:{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'List'
+    }
+},{ 
+    timestamps: true
+})
+
+taskSchema.static({
+    findById (listId) {
+        return this.find({ list:listId})
     }
 })
 
 const Task = mongoose.model('Task', taskSchema)
 
+//const newTask = Task.create({ title:'Task 1', lsit: '2435353Z53531R3TE'})
 
 
 export default Task
