@@ -3,14 +3,14 @@ import * as ListControllers from '#components/list/list-controllers.js'
 
 const list = new Router()
 
-list.get('/', ListControllers.index)
+list.get('/', isAuthenticatedWithUser, ListControllers.index)
 
-list.post('/', ListControllers.create)
+list.post('/', isAuthenticatedWithUser, ListControllers.create)
 
-list.get('/:id', ListControllers.getById)
+list.get('/:id', isAuthenticatedWithUser, ListControllers.getById)
 
-list.delete('/:id', ListControllers.deleteById)
+list.delete('/:id', isAuthenticatedWithUser, ListControllers.deleteById)
 
-list.put('/:id', ListControllers.updateById)
+list.put('/:id', isAuthenticatedWithUser, ListControllers.updateById)
 
 export default list

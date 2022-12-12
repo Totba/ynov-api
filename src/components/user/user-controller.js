@@ -33,4 +33,51 @@ export async function register (ctx) {
 
 
 export async function login (ctx) {
+    try {
+        const loginValidationSchema = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string().required()
+        })
+        const params = ctx.request.body
+        const  { error, value } = loginValidationSchema.validate(params)
+        if(error) throw new Error(error)
+        const user = await UserModel.findOne({email: params.email}, {email: 1, password: 1})
+        if(!user) { return ctx.notFound() }
+        if(await argon2.verify(user.password, params.password)) {    
+            const token = user.generateJWT()
+            ctx.ok({ token })
+        }
+        else {
+            ctx.status = 401
+            ctx.body = "Pas le bon password"
+        }
+    } catch(e) {
+        ctx.badRequest({ message: e.message })
+    }
+}
+
+export async function update (ctx) {
+    try {
+        let idUser = ctx.state.user._id
+
+        const loginValidationSchema = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string().required()
+        })
+        let json = ctx.request.body
+        const  { error, value } = loginValidationSchema.validate(json)
+        if(error) throw new Error(error)
+        if(!await UserModel.findOne({email: json.email}, {email: 1})) {
+            json.updateAt = Date.now()
+            await UserModel.findOneAndUpdate(idUser, json)
+            ctx.status = 200
+            ctx.body = "User update"
+        } else {
+            ctx.status = 400
+            ctx.body = "Un user a déjà cet email"
+        }
+        
+    } catch(e) {
+        ctx.badRequest({ message: e.message })
+    }
 }

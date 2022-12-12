@@ -13,15 +13,15 @@ tasks.get('/protected', isAuthenticatedWithUser, (ctx) => {
     })
 })
 
-tasks.get('/:id', TaskControllers.id)
+tasks.get('/:id', isAuthenticatedWithUser, TaskControllers.id)
 
-tasks.get('/lists/:listId', TaskControllers.getAllByList)
+tasks.get('/lists/:listId', isAuthenticatedWithUser, TaskControllers.getAllByList)
 
-tasks.post('/', TaskControllers.create)
+tasks.post('/', isAuthenticatedWithUser, TaskControllers.create)
 
-tasks.put('/:id', TaskControllers.update)
+tasks.put('/:id', isAuthenticatedWithUser, TaskControllers.update)
 
-tasks.del('/:id', TaskControllers.destroy)
+tasks.del('/:id', isAuthenticatedWithUser, TaskControllers.destroy)
 
 
 

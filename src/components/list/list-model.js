@@ -12,6 +12,11 @@ const listSchema = new Schema({
         type: String,
         required: true
     },
+    createBy:{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     child: {
         age:{
             type: Number
