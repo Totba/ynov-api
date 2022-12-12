@@ -4,7 +4,7 @@ import { isAuthenticatedWithUser } from '#middlewares/jwt-handler.js'
 
 const tasks = new Router()
 
-tasks.get('/', TaskControllers.index)
+tasks.get('/', isAuthenticatedWithUser, TaskControllers.index)
 
 tasks.get('/protected', isAuthenticatedWithUser, (ctx) => {
     ctx.ok({

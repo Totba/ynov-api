@@ -4,7 +4,7 @@ import Joi from 'joi'
 
 export async function index (ctx) {
     try {
-        ctx.body = await List.find({})
+        ctx.body = await List.find({createBy: ctx.state.user.id})
     } catch (e) {
         ctx.badResquest({ message: e.message})
     }

@@ -1,10 +1,10 @@
 import TaskModel from '#components/task/task-model.js'
 import { updateTask } from '#components/task/task-user-cases.js'
-import Joi from 'Joi'
+import Joi from 'joi'
 
 export async function index (ctx) {
     try {
-    const tasks = await TaskModel.find({})
+    const tasks = await TaskModel.find({createBy: ctx.state.user.id})
     ctx.ok(tasks)
     } catch (e) {
     ctx.badRequest({ message: e.message })
@@ -71,7 +71,7 @@ export async function update (ctx) {
         ctx.body = "Unauthorized" 
         return ctx.status = 401
     }
-    
+
     const updatedTask = await updateTask(ctx.params.id, ctx.request.body)
 
     ctx.ok(updatedTask)
