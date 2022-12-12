@@ -16,12 +16,6 @@ const listSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'User'
-    },
-    child: {
-        age:{
-            type: Number
-        },
-        name: String
     }
 },
 {
@@ -30,7 +24,7 @@ const listSchema = new Schema({
 
 const List = mongoose.model('List', listSchema)
 
-const newList = new List({ title: 'Courses'})
+//const newList = new List({ title: 'Courses'})
 
 //newList.tasks[0].title = "Acheter des pommes de terre"
 

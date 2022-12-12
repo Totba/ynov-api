@@ -1,4 +1,5 @@
 import List from "#components/list/list-model.js";
+import TaskModel from '#components/task/task-model.js'
 import Joi from 'joi'
 
 
@@ -44,12 +45,14 @@ export async function create (ctx) {
 
 export async function getById (ctx) {
     try {
-        var list = await List.findById(ctx.params.id)
+        var list = await List.findById(ctx.params.id).lean()
         if(list.createBy.toString() !== ctx.state.user.id){
             ctx.body = "Unauthorized"
             return ctx.status = 401
         }
         
+        list.tasks = await TaskModel.findByListId(ctx.params.id)
+
         ctx.status = 200
         ctx.body = list
         
