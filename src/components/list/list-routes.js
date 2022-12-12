@@ -4,7 +4,7 @@ import { isAuthenticatedWithUser } from '#middlewares/jwt-handler.js'
 
 const list = new Router()
 
-list.get('/', isAuthenticatedWithUser, ListControllers.index)
+list.get('/', ListControllers.index)
 
 list.post('/', isAuthenticatedWithUser, ListControllers.create)
 
