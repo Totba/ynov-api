@@ -24,11 +24,6 @@ const taskSchema = new Schema({
     timestamps: true
 })
 
-taskSchema.static({
-    findById (listId) {
-        return this.find({ list:listId})
-    }
-})
 
 const Task = mongoose.model('Task', taskSchema)
 

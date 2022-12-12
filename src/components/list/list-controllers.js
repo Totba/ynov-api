@@ -28,7 +28,10 @@ export async function create (ctx) {
         if(error) {
             throw new Error(error)
         } else {
-            List.create(ctx.request.body)
+            var list = ctx.request.body
+            list.createBy = ctx.state.user.id
+
+            await List.create(list)
             ctx.status = 200
             ctx.body = "List Add"
         }
@@ -41,26 +44,44 @@ export async function create (ctx) {
 
 export async function getById (ctx) {
     try {
-        ctx.body = await List.findById(ctx.params.id)
+        var list = await List.findById(ctx.params.id)
+        if(list.createBy.toString() !== ctx.state.user.id){
+            ctx.body = "Unauthorized"
+            return ctx.status = 401
+        }
+        
+        ctx.status = 200
+        ctx.body = list
+        
     } catch (e) {
-        ctx.badResquest({ message: e.message})
+        ctx.badRequest({ message: e.message})
     }
 }
 
 export async function deleteById (ctx) {
     try {
+        var list = await List.findById(ctx.params.id)
+        if(list.createBy.toString() !== ctx.state.user.id){
+            ctx.body = "Unauthorized"
+            return ctx.status = 401
+        }
         await List.findOneAndRemove(ctx.params.id)
         ctx.status = 200
         ctx.body = "List delete"
     } catch (e) {
-        ctx.badResquest({ message: e.message})
+        ctx.badRequest({ message: e.message})
     }
 }
 
 
 export async function updateById (ctx) {
     try {
-        console.log(ctx.params.id)
+        var list = await List.findById(ctx.params.id)
+        if(list.createBy.toString() !== ctx.state.user.id){
+            ctx.body = "Unauthorized"
+            return ctx.status = 401
+        }
+
         let json = ctx.request.body
         json.updateAt = Date.now()
 
@@ -68,6 +89,6 @@ export async function updateById (ctx) {
         ctx.status = 200
         ctx.body = "List upsdate"
     } catch (e) {
-        ctx.badResquest({ message: e.message})
+        ctx.badRequest({ message: e.message})
     }
 }

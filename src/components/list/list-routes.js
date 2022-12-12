@@ -1,5 +1,6 @@
 import Router from '@koa/router'
 import * as ListControllers from '#components/list/list-controllers.js'
+import { isAuthenticatedWithUser } from '#middlewares/jwt-handler.js'
 
 const list = new Router()
 

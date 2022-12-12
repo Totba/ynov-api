@@ -64,10 +64,10 @@ const deleteById = async () => {
     const exemple = Exemple.findById('63721a71f13503e36aabce1c')
 }
 
-findAll()
+//findAll()
 //updateById()
-findById()
-deleteById()
+//findById()
+//deleteById()
 
 
 export default Exemple

@@ -15,7 +15,11 @@ export async function id (ctx) {
     try {
     if(!ctx.params.id) throw new Error('No id supplied')
     const task = await TaskModel.findById(ctx.params.id)
-    if(!task) { return ctx.notFound() }
+    if(task.createBy.toString() !== ctx.state.user.id) { 
+        ctx.body = "Unauthorized" 
+        return ctx.status = 401
+    }
+
     ctx.ok(task)
     } catch (e) {
     ctx.badRequest({ message: e.message })
@@ -42,7 +46,9 @@ export async function create (ctx) {
     })
     const { error, value } = taskValidationSchema.validate(ctx.request.body)
     if(error) throw new Error(error)
-    const newTask = await TaskModel.create(value)
+    var task = ctx.request.body
+    task.createBy = ctx.state.user.id
+    const newTask = await TaskModel.create(task)
     ctx.ok(newTask)
     } catch (e) {
     ctx.badRequest({ message: e.message })
@@ -54,13 +60,18 @@ export async function update (ctx) {
     const taskValidationSchema = Joi.object({
         title: Joi.string().required(),
         description: Joi.string(),
-        list: Joi.string(),
-        done: Joi.boolean()
+        list: Joi.string()
     })
     if(!ctx.params.id) throw new Error('No id supplied')
     const { error, value } = taskValidationSchema.validate(ctx.request.body)
     if(error) throw new Error(error)
 
+    const task = await TaskModel.findById(ctx.params.id)
+    if(task.createBy.toString() !== ctx.state.user.id) { 
+        ctx.body = "Unauthorized" 
+        return ctx.status = 401
+    }
+    
     const updatedTask = await updateTask(ctx.params.id, ctx.request.body)
 
     ctx.ok(updatedTask)
@@ -72,8 +83,13 @@ export async function update (ctx) {
 export async function destroy (ctx) {
     try {
     if(!ctx.params.id) throw new Error('No id supplied')
+    const task = await TaskModel.findById(ctx.params.id)
+    if(task.createBy.toString() !== ctx.state.user.id) { 
+        ctx.body = "Unauthorized" 
+        return ctx.status = 401
+    }
     await TaskModel.findByIdAndDelete(ctx.params.id)
-    ctx.ok('Ressource deleted')
+    ctx.ok('Task deleted')
     } catch (e) {
     ctx.badRequest({ message: e.message })
     }
