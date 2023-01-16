@@ -42,14 +42,15 @@ export async function create (ctx) {
     const taskValidationSchema = Joi.object({
         title: Joi.string().required(),
         description: Joi.string(),
-        list: Joi.string().required()
+        list: Joi.string().required(),
+        done: Joi.boolean().required()
     })
     const { error, value } = taskValidationSchema.validate(ctx.request.body)
     if(error) throw new Error(error)
     var task = ctx.request.body
     task.createBy = ctx.state.user.id
     const newTask = await TaskModel.create(task)
-    ctx.ok(newTask)
+    ctx.response.status = 201
     } catch (e) {
     ctx.badRequest({ message: e.message })
     }
@@ -60,7 +61,8 @@ export async function update (ctx) {
     const taskValidationSchema = Joi.object({
         title: Joi.string().required(),
         description: Joi.string(),
-        list: Joi.string()
+        list: Joi.string().required(),
+        done: Joi.boolean().required()
     })
     if(!ctx.params.id) throw new Error('No id supplied')
     const { error, value } = taskValidationSchema.validate(ctx.request.body)

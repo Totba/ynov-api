@@ -33,8 +33,7 @@ export async function create (ctx) {
             list.createBy = ctx.state.user.id
 
             await List.create(list)
-            ctx.status = 200
-            ctx.body = "List Add"
+            ctx.response.status = 201
         }
 
     } catch (e) {
